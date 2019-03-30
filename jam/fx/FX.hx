@@ -7,23 +7,14 @@ import jam.fx.frontends.SceneFE;
 import jam.fx.frontends.SoundFE;
 import jam.fx.frontends.TextEmitterFE;
 
-/** FX - Easy to use class for playing sounds and emitting particles.
- *  * `FX.emitter.emit(...)`
- *    * Emit particles with, or without explode = true and other features.
- *  * `FX.quickText.emit(...)`
- *    * Emit a QText object with a tween.
- *  * `FX.sound.play(...)`
- *    * Play a sound, or Array of sounds in succession, or randomly, with or without sound proximity.
- *  * `FX.scene.play(...)`
- *    * Array of emitter(s), sound(s) and/or quickText to play at once using predefined scenes.
- *  * `FX.textEmitter.emit(...)`
- *    * Emit text particles with, or without explode = true and other features.
- *
- * See the frontend classes for the functions.
+/**
+ * FX - Easy to use class for playing sounds and emitting particles.
  */
 class FX
 {
-	/** Colors to use in FX color scheme. */
+	/**
+	 * Colors to use in FX color scheme.
+	 */
 	public static var colors:Array<Int> = [
 		0xFF666666,
 		0xFFff2d2d,
@@ -36,7 +27,7 @@ class FX
 	];
 
 	/** 
-	 * emitter function that targets an object with an optional color argument.
+	 * Target an object and emit particles with an optional color argument.
 	 */
 	public static var emitter(default, null):EmitterFE;
 
@@ -45,7 +36,9 @@ class FX
 	 */
 	public static var quickText(default, null):QuickTextFE;
 
-	/** scene frontend */
+	/**
+	 * Function for playing scenes.
+	 */
 	public static var scene(default, null):SceneFE;
 	#if FLX_SOUND_SYSTEM
 
@@ -63,12 +56,16 @@ class FX
 	/**
 	 * Initialize the frontend classes and add the quickText group to the state.
 	 */
-	public static function init(state:FlxState):Void
+	public static function init(?state:FlxState):Void
 	{
 		emitter = new EmitterFE();
 
 		quickText = new QuickTextFE();
-		state.add(quickText);
+
+		if (state != null)
+		{
+			state.add(quickText);
+		}
 
 		scene = new SceneFE();
 
