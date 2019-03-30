@@ -8,14 +8,7 @@ import flixel.system.FlxSound;
 import flixel.system.FlxSoundGroup;
 
 /**
- * Functions for playing sound(s) and music.
- *
- * play(...) - Plays a sound, or an Array of sounds. 
- * If optional `target` and `player` are specified, volume and pan are calculated according to their proximity.
- * If `sound` is a CSV string (`"s1, s2, s3"`) it will be split into an Array to either play one sound at random, 
- * or all sounds in succession, depending on the `random` value. Default is `random = true`.
- * 
- * @author Dean Andreason
+ * FrontEnd for playing sound(s).
  */
 class SoundFE
 {
@@ -43,7 +36,6 @@ class SoundFE
 		}
 		else
 		{
-		//	this.range = FlxPoint.get(0, 0).distanceTo(FlxPoint.get(FlxG.width, FlxG.height));
 			var p1 = FlxPoint.get(0, 0);
 			var p2 = FlxPoint.get(FlxG.width, FlxG.height);
 			this.range = p1.distanceTo(p2);
@@ -143,7 +135,7 @@ class SoundFE
 	}
 
 	/**
-	 * Play an array of sounds, one after another.
+	 * Play an array of sounds in succession, or one at random.
 	 * @param sounds        Array of sounds to be played in succession.
 	 * @param volume        Volume of the sounds.
 	 * @param target        Optional target object that the sound is coming from. If null, proximity will be ignored.
