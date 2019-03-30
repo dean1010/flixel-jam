@@ -23,39 +23,39 @@ class SceneFE
 	 * @param player   Optional player object used for calculating sound proximity to target.
 	 * @param color    Optional color to apply to emitters and qText overriding their color parameters. Default is `0x0`.
 	 * @param index    Optional index for playing sounds and to color particles with FX.colors[colorIndex]. Default is `-1`. (ignore)
-	 * @param text     Optional index for playing sounds and to color particles with FX.colors[colorIndex]. Default is `-1`. (ignore)
+	 * @param text     Optional text for qText. Default is `""`.
 	 */
-	public function play(scene:Scene, target:FlxObject, ?player:FlxObject, color:Int = 0x0, index:Int = -1, text:String = "", ?onComplete:Void->Void):Void
+	public function play(scene:Scene, target:FlxObject, ?player:FlxObject, color:Int = 0x0, index:Int = -1, text:String = ""):Void
 	{
-		if (onComplete != null)
-		{
-//			scene.onComplete = onComplete;
-		}
-
 		if (scene.emitters != null)
 		{
 			for (e in scene.emitters)
 			{
-				var eColor = e.color; // (color == 0x0) ? e.color : color;
+				var eColor = e.color;
 
-				if (e.color == 0x0)
+				if (e.color != 0x0)
 				{
-				//	if (index != -1)       eColor = FX.colors[index];
-				//	else 
-					if (color != 0x0) eColor = color;
+					if (index != -1)       eColor = FX.colors[index];
+					else if (color != 0x0) eColor = color;
 				}
 
-				FX.emitter.emit(e.emitter, target, e.quantity, eColor, index, e.frequency);
+				FX.emitter.emit(e.emitter, target, e.quantity, eColor, e.frequency);
 			}
 		}
 
 		if (scene.qText != null)
 		{
 			var q = scene.qText;
-			var qColor = (color == 0x0) ? q.color : color;
-			var qText = (text == "") ? q.text : text;
+			var qColor = q.color;
+			var qText = (q.text != "") ? q.text : text;
 
-			FX.quickText.emit(target, qText, qColor, q.duration, q.scaleTo, q.yTo, index, q.killScene, q.targetThis, q.synchColor, q.keepInView, q.center, q.size);
+			if (q.color != 0x0)
+			{
+				if (index != -1)       qColor = FX.colors[index]; 
+				else if (color != 0x0) qColor = color;
+			}
+
+			FX.quickText.emit(target, qText, qColor, q.duration, q.scaleTo, q.yTo, q.killScene, q.targetThis, q.synchColor, q.keepInView, q.center, q.size);
 		}
 
 		if (scene.sounds != null)
@@ -69,16 +69,16 @@ class SceneFE
 		if (scene.textEmitter != null)
 		{
 			var t = scene.textEmitter;
-			var tColor = t.color; // (color == 0x0) ? e.color : color;
-
-			if (t.color == 0x0)
+			var tColor = t.color;
+			var tText = (t.text != "") ? t.text : text;
+				
+			if (t.color != 0x0)
 			{
-			//	if (index != -1)       tColor = FX.colors[index];
-			//	else 
-				if (color != 0x0) tColor = color;
+				if (index != -1)       tColor = FX.colors[index]; 
+				else if (color != 0x0) tColor = color;
 			}
 
-			FX.textEmitter.emit(t.emitter, target, text, t.quantity, tColor, index, t.frequency);
+			FX.textEmitter.emit(t.emitter, target, tText, t.quantity, tColor, t.frequency);
 		}
 	}
 }
