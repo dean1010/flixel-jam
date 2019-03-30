@@ -1,7 +1,6 @@
 package jam.fx.scenes;
 
 import flixel.FlxG;
-//import flixel.FlxBasic;
 import flixel.FlxObject;
 import flixel.effects.particles.FlxEmitter;
 import flixel.system.FlxSoundGroup;
@@ -9,26 +8,42 @@ import jam.fx.particles.TextEmitter;
 import jam.fx.text.QText;
 
 /** 
- * Scene object with emitter(s) and/or sound(s) to play.
- */
-class Scene // extends FlxBasic
-{
-//	public var onComplete:Void->Void;
+ * Scene object to define a scene with emitter(s), sound(s), quickText and/or textEmitter. 
+ * 
+ * Example:
+```
+var myScene = new Scene(
+	[
+		{emitter: emitters.blood, quantity: 10},
+		{emitter: emitters.pixels, quantity: 10, color: 0xFFFFFF00}
+	], 
+	[
+		{sound: "hurt", volume: 0.5}
+	], 
+	{text: "Ow!", color: 0xFFFFFF00, duration: 0.5, scaleTo: 1.5}
+);
 
+FX.scene.play(myScene, target, player);
+
+```
+ */
+class Scene
+{
 	/** Emitter(s) data array. */
-	public var emitters:Array<EmitterData>;
+	public var emitters(default, set):Array<EmitterData>;
 
 	/** Sound(s) data array. */
-	public var sounds:Array<SoundData>;
+	public var sounds(default, set):Array<SoundData>;
 
 	/** QText data. */
-	public var qText:QTextData;
+	public var qText(default, set):QTextData;
 
 	/** TextEmitter data. */
-	public var textEmitter:TextEmitterData;
+	public var textEmitter(default, set):TextEmitterData;
 
 	/** 
-	 * Create and setup a Scene object with emitter(s), sound(s) and qText to play.
+	 * Create and setup a Scene object with optional emitter(s), sound(s), qText or textEmitter to play.
+	 *
 	 * @param emitters      Optional Array of EmitterData for this scene.
 	 * @param sounds        Optional Array of SoundData for this scene.
 	 * @param qText         Optional QTextData for this scene.
@@ -36,101 +51,74 @@ class Scene // extends FlxBasic
 	 */
 	public function new(?emitters:Array<EmitterData>, ?sounds:Array<SoundData>, ?qText:QTextData, ?textEmitter:TextEmitterData)
 	{
-//		super();
+		set_emitters(emitters);
+		set_sounds(sounds);
+		set_qText(qText);
+		set_textEmitter(textEmitter);
+	}
 
+	function set_emitters(emitters:Array<EmitterData>):Array<EmitterData>
+	{
 		if (emitters != null)
 		{
-			for (e in emitters)				// Assign default values
+			for (e in emitters)
 			{
-				if (e.color == null)			e.color = -1;
-				if (e.frequency == null)		e.frequency = 0;
-				if (e.quantity == null)			e.quantity = 0;
+				if (e.color == null)	 e.color = 0xFFFFFFFF;
+				if (e.frequency == null) e.frequency = 0;
+				if (e.quantity == null)	 e.quantity = 0;
 			}
 		}
-		
-		if (textEmitter != null)			// Assign default values
-		{
-			if (textEmitter.color == null)		textEmitter.color = -1;
-			if (textEmitter.frequency == null)	textEmitter.frequency = 0;
-			if (textEmitter.quantity == null)	textEmitter.quantity = 0;
-			if (textEmitter.text == null)		textEmitter.text = "?";
-		}
-		
+
+		return this.emitters = emitters;
+	}
+
+	function set_sounds(sounds:Array<SoundData>):Array<SoundData>
+	{
 		if (sounds != null)
 		{
-			for (s in sounds)				// Assign default values
+			for (s in sounds)
 			{
-				if (s.random == null)			s.random = true;
-				if (s.volume == null)			s.volume = 1;
-				if (s.autoDestroy == null)		s.autoDestroy = true;
-				if (s.looped == null)			s.looped = false;
+				if (s.random == null)	   s.random = true;
+				if (s.volume == null)	   s.volume = 1;
+				if (s.autoDestroy == null) s.autoDestroy = true;
+				if (s.looped == null)	   s.looped = false;
 			}
+		}
+
+		return this.sounds = sounds;
+	}
+
+	function set_qText(qText:QTextData):QTextData
+	{
+		if (qText != null)
+		{
+			if (qText.center == null)	  qText.center = false;
+			if (qText.color == null)	  qText.color = 0xFFFFFFFF;
+			if (qText.duration == null)	  qText.duration = 1;
+			if (qText.keepInView == null) qText.keepInView = true;
+			if (qText.scaleTo == null)	  qText.scaleTo = 1;
+			if (qText.text == null)		  qText.text = "";
+			if (qText.size == null)		  qText.size = 8;
+			if (qText.targetThis == null) qText.targetThis = false;
+			if (qText.synchColor == null) qText.synchColor = true;
+			if (qText.yTo == null)		  qText.yTo = 0;
 		}
 		
-		if (qText != null)					// Assign default values
-		{
-			if (qText.center == null)			qText.center = false;
-			if (qText.color == null)			qText.color = -1;
-			if (qText.duration == null)			qText.duration = 1;
-			if (qText.keepInView == null)		qText.keepInView = true;
-			if (qText.scaleTo == null)			qText.scaleTo = 1;
-			if (qText.text == null)				qText.text = "?";
-			if (qText.size == null)				qText.size = 8;
-			if (qText.targetThis == null)		qText.targetThis = false;
-			if (qText.synchColor == null)		qText.synchColor = true;
-			if (qText.yTo == null)				qText.yTo = 0;
-		}
-
-		this.emitters = emitters;
-		this.sounds = sounds;
-		this.qText = qText;
-		this.textEmitter = textEmitter;
+		return this.qText = qText;
 	}
 
-/*
-	var complete = false;
-	var print = false;
-	var sPrint = false;
-	var ePrint = false;
-
-	override public function update(elapsed:Float):Void
+	function set_textEmitter(textEmitter:TextEmitterData):TextEmitterData
 	{
-		super.update(elapsed);
-	
-		trace("wtf");
-
-		if (!print)
+		if (textEmitter != null)
 		{
-			print = true;
-			trace("here");
+			if (textEmitter.color == null)	   textEmitter.color = 0xFFFFFFFF;
+			if (textEmitter.frequency == null) textEmitter.frequency = 0;
+			if (textEmitter.quantity == null)  textEmitter.quantity = 0;
+			if (textEmitter.text == null)	   textEmitter.text = "";
 		}
 
-
-		for (e in emitters)
-		{
-			complete = false;
-			if (e.emitter.alive)
-			{
-				return;
-			}
-			complete = true;
-		}
-
-		if (!ePrint)
-		{
-			ePrint = true;
-			trace("emitters complete 2");
-		}
-
-		if (complete)
-		{
-			trace("complete!");
-			kill();
-			onComplete();
-		}
+		return this.textEmitter = textEmitter;
 	}
-*/
-
 }
 
 /** Emitter data for a scene. */
@@ -147,14 +135,13 @@ typedef EmitterData =
 
 	/** Optional frequency to emit particles. Default is `0`. */
 	var ?frequency:Float;
-
 }
 
 /** QText data for a scene. */
 typedef QTextData =
 {
 	/** Text to display. */
-	var text:String;
+	var ?text:String;
 
 	/** Optional color to make the text. Default is `-1` (white, no tint). */
 	var ?color:Int;
@@ -190,7 +177,7 @@ typedef QTextData =
 /** Sound data for a scene. */
 typedef SoundData =
 {
-	/** Sound to play. */
+	/** Sound(s) to play. */
 	var sound:String;
 
 	/** Optional volume to play the sound. Default is `1`. */
@@ -198,9 +185,6 @@ typedef SoundData =
 
 	/** Optional. Whether to play a random sound from Array when `sound` is a CSV. Default is `true` but will be ignored if not a CSV. */
 	var ?random:Bool;
-
-	/** Whether to `put()` the Point back in the pool. Default is `true`. */
-//	var ?putPoint:Bool;
 
 	/** Whether to loop the sound. Default is `false`. */
 	var ?looped:Bool;
@@ -218,7 +202,7 @@ typedef SoundData =
 /** TextEmitter data for a scene. */
 typedef TextEmitterData =
 {
-	/** Emitter to emit or explode. */
+	/** TextEmitter to emit or explode. */
 	var emitter:TextEmitter;
 
 	/** Optional quantity of particles to emit. Default is `0`, or all the particles. */
