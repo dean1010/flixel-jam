@@ -1,4 +1,4 @@
-package jam.fx.particles;
+package jam.fx.text;
 
 import flixel.effects.particles.FlxParticle.IFlxParticle;
 import flixel.math.FlxPoint;
@@ -8,7 +8,7 @@ import flixel.util.FlxDestroyUtil;
 import flixel.util.helpers.FlxRange;
 
 /**
- * Text particle to use with TextEmitter.
+ * Text particle to use with TxtEmitter.
  */
 class TextParticle extends FlxText implements IFlxParticle
 {
@@ -29,7 +29,7 @@ class TextParticle extends FlxText implements IFlxParticle
 		exists = false;
 	}
 
-	/* INTERFACE flixel.effects.particles.FlxParticle.IFlxParticle */
+	// interface IFlxParticle
 	public var lifespan:Float;
 	public var age(default, null):Float;
 	public var percent(default, null):Float;
@@ -42,10 +42,9 @@ class TextParticle extends FlxText implements IFlxParticle
 	public var dragRange:FlxRange<FlxPoint>;
 	public var accelerationRange:FlxRange<FlxPoint>;
 	public var elasticityRange:FlxRange<Float>;
-
-	private var _delta:Float = 0;
-
 	public function onEmit():Void {}
+
+	var delta:Float = 0;
 
 	/**
 	 * Clean up memory.
@@ -101,34 +100,34 @@ class TextParticle extends FlxText implements IFlxParticle
 		}
 		else
 		{
-			_delta = elapsed / lifespan;
+			delta = elapsed / lifespan;
 			percent = age / lifespan;
 
 			if (velocityRange.active)
 			{
-				velocity.x += (velocityRange.end.x - velocityRange.start.x) * _delta;
-				velocity.y += (velocityRange.end.y - velocityRange.start.y) * _delta;
+				velocity.x += (velocityRange.end.x - velocityRange.start.x) * delta;
+				velocity.y += (velocityRange.end.y - velocityRange.start.y) * delta;
 			}
 			var pos = getPosition();
-			pos.x += velocity.x * _delta;
-			pos.y += velocity.y * _delta;
+			pos.x += velocity.x * delta;
+			pos.y += velocity.y * delta;
 			setPosition(pos.x, pos.y);
 
 			if (angularVelocityRange.active)
 			{
-				angularVelocity += (angularVelocityRange.end - angularVelocityRange.start) * _delta;
+				angularVelocity += (angularVelocityRange.end - angularVelocityRange.start) * delta;
 			}
 
 			if (scaleRange.active)
 			{
-				scale.x += (scaleRange.end.x - scaleRange.start.x) * _delta;
-				scale.y += (scaleRange.end.y - scaleRange.start.y) * _delta;
+				scale.x += (scaleRange.end.x - scaleRange.start.x) * delta;
+				scale.y += (scaleRange.end.y - scaleRange.start.y) * delta;
 				if (autoUpdateHitbox) updateHitbox();
 			}
 
 			if (alphaRange.active)
 			{
-				alpha += (alphaRange.end - alphaRange.start) * _delta;
+				alpha += (alphaRange.end - alphaRange.start) * delta;
 			}
 
 			if (colorRange.active)
@@ -138,19 +137,19 @@ class TextParticle extends FlxText implements IFlxParticle
 
 			if (dragRange.active)
 			{
-				drag.x += (dragRange.end.x - dragRange.start.x) * _delta;
-				drag.y += (dragRange.end.y - dragRange.start.y) * _delta;
+				drag.x += (dragRange.end.x - dragRange.start.x) * delta;
+				drag.y += (dragRange.end.y - dragRange.start.y) * delta;
 			}
 
 			if (accelerationRange.active)
 			{
-				acceleration.x += (accelerationRange.end.x - accelerationRange.start.x) * _delta;
-				acceleration.y += (accelerationRange.end.y - accelerationRange.start.y) * _delta;
+				acceleration.x += (accelerationRange.end.x - accelerationRange.start.x) * delta;
+				acceleration.y += (accelerationRange.end.y - accelerationRange.start.y) * delta;
 			}
 
 			if (elasticityRange.active)
 			{
-				elasticity += (elasticityRange.end - elasticityRange.start) * _delta;
+				elasticity += (elasticityRange.end - elasticityRange.start) * delta;
 			}
 		}
 
@@ -160,6 +159,7 @@ class TextParticle extends FlxText implements IFlxParticle
 	override public function reset(x:Float, y:Float):Void
 	{
 		super.reset(x, y);
+
 		age = 0;
 		visible = true;
 	}

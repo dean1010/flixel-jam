@@ -1,13 +1,13 @@
-package jam.fx.particles;
+package jam.fx.text;
 
 import flixel.FlxG;
 import flixel.effects.particles.FlxEmitter;
 import flixel.math.FlxVelocity;
 
 /**
- * TextEmitter for emitting TextParticles.
+ * TxtEmitter for emitting TextParticles.
  */
-class TextEmitter extends FlxTypedEmitter<TextParticle>
+class TxtEmitter extends FlxTypedEmitter<TextParticle>
 {
 	public var text:String = null;
 	public var font:String = null;
