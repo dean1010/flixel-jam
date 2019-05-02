@@ -12,6 +12,7 @@ class TextTicker extends FlxSpriteGroup
 {
 	var ticker:FlxSprite;
 	var tf:FlxText;
+	var stampY:Int = 0;
 	var bgX:Float = 0;
 	var bgY:Float = 0;
 	var bgColor:Int;
@@ -56,6 +57,10 @@ class TextTicker extends FlxSpriteGroup
 		tf.wordWrap = false;
 
 		ticker = new FlxSprite(x, y).makeGraphic(Math.round(width), Math.round(height), bgColor, true);
+		stampY = Math.round((ticker.height - tf.height) / 2);
+
+	//	stampY += (upperCase) ? 1 : 0;
+	//	trace(stampY);
 
 		add(ticker);
 	}
@@ -79,7 +84,7 @@ class TextTicker extends FlxSpriteGroup
 		{
 			tf.x -= 1;
 			ticker.graphic.bitmap.fillRect(ticker.graphic.bitmap.rect, bgColor);
-			ticker.stamp(tf, Math.round(tf.x), 0);
+			ticker.stamp(tf, Math.round(tf.x), stampY);
 			FlxSpriteUtil.drawRect(ticker, bgX, bgY, width - border, height - border, 0x0, lineStyle);
 		}
 	}

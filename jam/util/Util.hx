@@ -75,6 +75,27 @@ class Util
 	}
 
 	/**
+	 * Format time (in seconds) to `hh:mm:ss`
+	 * @param time     Time in seconds.
+	 * @param padHours Whether to pad the hours to two digits.
+ * @return Formatted time as `hh:mm:ss`.
+	 */
+	public static function formatTime(time:Float, padHours:Bool = false):String
+	{
+		if (time < 0) time = 0;
+
+		var h = Std.string(Std.int((time / 60) / 60));
+		var m = Std.string(Std.int(time / 60) % 60);
+		var s = Std.string(Std.int(time) % 60);
+
+		if (padHours && h.length == 1) h = "0" + h;
+		if (m.length == 1) m = "0" + m;
+		if (s.length == 1) s = "0" + s;
+
+		return h + ":" + m + ":" + s;
+	}
+
+	/**
 	 * Remove all spaces from a String.
 	 * @param s String to remove spaces from.
 	 * @return String with spaces removed.
@@ -96,7 +117,7 @@ class Util
 		var a:Array<Int> = new Array();
 		var i = 1;
 
-		while (total >= 6)
+		while (total >= max)
 		{
 			i = FlxG.random.int(min, max);
 			a.push(i);

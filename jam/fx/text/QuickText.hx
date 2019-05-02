@@ -33,8 +33,8 @@ class QuickText extends FlxText
 	 * @param duration   Duration of the tween in seconds. Default is `1`.
 	 * @param scaleTo    Optional amount to scale the text. Default is `1`.
 	 * @param yTo        Amount to tween the text `y`. Negative numbers tween up. Default is `0`.
-	 * @param keepInView Whether to move the quickText to keep all text in view when near an edge of the screen. Default is `true`.
-	 * @param center     Whether to tween to center screen or tween to `yTo`. Default is `false`.
+	 * @param keepInView Whether to keep all text in view when near an edge. Default is `true`.
+	 * @param center     Whether to tween to center to camera (`true`), or to `yTo`. Default is `false`.
 	 * @param size       Size of the text before scaling. Default is `8`.
 	 */
 	public function emit(target:FlxObject, text:String, color:Int = 0xFFFFFFFF, duration:Float = 1, scaleTo:Float = 1, yTo:Float = 0, keepInView:Bool = true, center:Bool = false, size:Int = 8):Void
@@ -64,18 +64,18 @@ class QuickText extends FlxText
 			{
 				targetPoint.x = ((width * scaleTo) - width) / 2;
 			}
-			else if (targetPoint.x + (((width * scaleTo) + width) / 2) > FlxG.width)
+			else if (targetPoint.x + (((width * scaleTo) + width) / 2) > FlxG.worldBounds.width)
 			{
-				targetPoint.x = FlxG.width - ((width * scaleTo) + width) / 2;
+				targetPoint.x = FlxG.worldBounds.width - ((width * scaleTo) + width) / 2;
 			}
 
 			if (targetPoint.y - (((height * scaleTo) - height) / 2) + yTo < 0)
 			{
 				targetPoint.y = ((height * scaleTo) - height) / 2;
 			}
-			else if (targetPoint.y + (((height * scaleTo) + height) / 2) + yTo > FlxG.height)
+			else if (targetPoint.y + (((height * scaleTo) + height) / 2) + yTo > FlxG.worldBounds.height)
 			{
-				targetPoint.y = FlxG.height - ((height * scaleTo) + height) / 2;
+				targetPoint.y = FlxG.worldBounds.height - ((height * scaleTo) + height) / 2;
 			}
 			else
 			{
