@@ -78,7 +78,7 @@ class Util
 	 * Format time (in seconds) to `hh:mm:ss`
 	 * @param time     Time in seconds.
 	 * @param padHours Whether to pad the hours to two digits.
- * @return Formatted time as `hh:mm:ss`.
+	 * @return Formatted time as `hh:mm:ss`.
 	 */
 	public static function formatTime(time:Float, padHours:Bool = false):String
 	{

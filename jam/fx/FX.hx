@@ -11,19 +11,6 @@ import jam.fx.frontends.TextEmitterFE;
  */
 class FX
 {
-	/**
-	 * Colors to use in the FX color scheme.
-	 */
-	public static var colors:Array<Int> = [
-		0xFFFFFFFF,
-		0xFFff2d2d,
-		0xFFff8000,
-		0xFFffcc00,
-		0xFFb9ee19,
-		0xFF3ef1f6,
-		0xFFd082ff
-	];
-
 	/** 
 	 * Target an object and emit particles with an optional color and offset.
 	 */
@@ -48,14 +35,12 @@ class FX
 
 	/**
 	 * Initialize the frontend classes.
-	 * @param colors Optional colors to use in the FX color scheme, overriding the default colors.
 	 * @param state  Optional FlxState if you want the quickText FlxGroup added here. 
 	 * Typically, you want the quickText group on top of z-order, so add() it accordingly.
 	 * Alternately, you can add it in your state with `add(FX.quickText)` at the end of `create()`.
 	 */
-	public static function init(?colors:Array<Int>, ?state:FlxState):Void
+	public static function init(?state:FlxState):Void
 	{
-		if (colors != null) FX.colors = colors;
 		if (state != null) state.add(quickText);
 
 		emitter = new EmitterFE();

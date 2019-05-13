@@ -66,4 +66,9 @@ class TextEmitter
 
 		return emitter.start(explode, frequency, quantity);
 	}
+
+	public function destroy():Void
+	{
+		emitter.destroy();
+	}
 }

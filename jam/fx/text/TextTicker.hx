@@ -29,11 +29,11 @@ class TextTicker extends FlxSpriteGroup
 	 * @param text        Text message to scroll.
 	 * @param textColor   Color of the scrolling text. Default is `0xFFFFFFFF`.
 	 * @param bgColor     Background color of the TextTicker. Default is `0xFF000000`.
-	 * @param borderColor Border color outlining the TextTicker. Default is `0xFF333333`.
+	 * @param borderColor Border color outlining the TextTicker. Default is `0xFF666666`.
 	 * @param border      Border thickness. Default is `1`.
 	 * @param upperCase   Whether or not to convert the text string to all uppercase. Default is `true`.
 	 */
-	public function new(x:Float = 0, y:Float = 0, width:Float = 128, height:Float = 16, text:String, textColor:Int = 0xFFFFFFFF, bgColor:Int = 0xFF000000, borderColor:Int = 0xFF333333, border:Int = 1, upperCase:Bool = true)
+	public function new(x:Float = 0, y:Float = 0, width:Float = 128, height:Float = 16, text:String, textColor:Int = 0xFFFFFFFF, bgColor:Int = 0xFF000000, borderColor:Int = 0xFF666666, border:Int = 1, upperCase:Bool = true)
 	{
 		super();
 

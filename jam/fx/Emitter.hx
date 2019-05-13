@@ -63,4 +63,10 @@ class Emitter
 
 		return emitter.start(explode, frequency, quantity);
 	}
+
+	public function destroy():Void
+	{
+		emitter.destroy();
+	}
+
 }

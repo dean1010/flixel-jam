@@ -142,8 +142,8 @@ class SoundFE
 	 * Play an array of sounds in succession, or one at random.
 	 * @param sounds      Array of sounds to be played in succession.
 	 * @param volume      Volume of the sounds.
-	 * @param target      Optional target object that the sound is coming from. If null, proximity is ignored.
-	 * @param player      Optional player object that sound is heard by. If null, proximity is ignored.
+	 * @param target      Optional target that the sound is coming from. If null, proximity is ignored.
+	 * @param player      Optional player that sound is heard by. If null, proximity is ignored.
 	 * @param group       Optional soundGroup to add the sounds to. Default is the default soundGroup.
 	 * @param autoDestroy Whether to destroy the sound when finished playing. Default is false.
 	 * @param onComplete  Optional function to call after the last sound completes.
