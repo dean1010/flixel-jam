@@ -53,14 +53,12 @@ class Util
 
 		var pA = objectA.getMidpoint(FlxPoint.get());
 		var pB = objectB.getMidpoint(FlxPoint.get());
-
-		var dx:Float = pA.x - pB.x;
-		var dy:Float = pA.y - pB.y;
+		var distance = pA.distanceTo(pB);
 
 		pA.put();
 		pB.put();
 
-		return Math.sqrt(dx * dx + dy * dy);
+		return distance;
 	}
 
 	/**
@@ -72,6 +70,21 @@ class Util
 	public static function distanceInTiles(distanceInPixels:Float, tileSize:Int):Float
 	{
 		return distanceInPixels / tileSize;
+	}
+
+	public static function setMouseEnabled(enabled:Bool = true, save:Bool = true):Void
+	{
+#if !MOBILE
+		FlxG.mouse.useSystemCursor = true;
+		
+		FlxG.mouse.enabled = FlxG.mouse.visible = enabled;
+		
+	//	if (save)
+	//	{
+	//		mouseEnabled = enabled;
+	//		saveOptions();
+	//	}
+#end
 	}
 
 	/**

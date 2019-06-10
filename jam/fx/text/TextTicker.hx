@@ -33,7 +33,7 @@ class TextTicker extends FlxSpriteGroup
 	 * @param border      Border thickness. Default is `1`.
 	 * @param upperCase   Whether or not to convert the text string to all uppercase. Default is `true`.
 	 */
-	public function new(x:Float = 0, y:Float = 0, width:Float = 128, height:Float = 16, text:String, textColor:Int = 0xFFFFFFFF, bgColor:Int = 0xFF000000, borderColor:Int = 0xFF666666, border:Int = 1, upperCase:Bool = true)
+	public function new(x:Float = 0, y:Float = 0, width:Float = 96, height:Float = 14, text:String, textColor:Int = 0xFFFFFFFF, bgColor:Int = 0xFF000000, borderColor:Int = 0xFF666666, border:Int = 1, upperCase:Bool = true)
 	{
 		super();
 
@@ -49,7 +49,7 @@ class TextTicker extends FlxSpriteGroup
 			lineStyle = {thickness: border, color: borderColor};
 		}
 
-		var textSize = Math.round(height - (border * 2) - 2);
+		var textSize = Math.round(height - (border * 2) - 1);
 
 		tf = new FlxText(width, 0, 0, textString, textSize);
 		tf.color = textColor;
@@ -58,6 +58,10 @@ class TextTicker extends FlxSpriteGroup
 
 		ticker = new FlxSprite(x, y).makeGraphic(Math.round(width), Math.round(height), bgColor, true);
 		stampY = Math.round((ticker.height - tf.height) / 2);
+
+	#if (windows||neko)
+		stampY -= 1;
+	#end
 
 	//	stampY += (upperCase) ? 1 : 0;
 	//	trace(stampY);

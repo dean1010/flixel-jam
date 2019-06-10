@@ -44,6 +44,8 @@ class QuickText extends FlxText
 		this.color = color;
 		this.size = size;
 		this.text = text;
+		
+		scrollFactor.set(target.scrollFactor.x, target.scrollFactor.y);
 
 		alpha = 1;
 		scale.set(1, 1);
@@ -64,18 +66,18 @@ class QuickText extends FlxText
 			{
 				targetPoint.x = ((width * scaleTo) - width) / 2;
 			}
-			else if (targetPoint.x + (((width * scaleTo) + width) / 2) > FlxG.worldBounds.width)
+			else if (targetPoint.x + (((width * scaleTo) + width) / 2) > FX.worldBounds.width)
 			{
-				targetPoint.x = FlxG.worldBounds.width - ((width * scaleTo) + width) / 2;
+				targetPoint.x = FX.worldBounds.width - ((width * scaleTo) + width) / 2;
 			}
 
 			if (targetPoint.y - (((height * scaleTo) - height) / 2) + yTo < 0)
 			{
 				targetPoint.y = ((height * scaleTo) - height) / 2;
 			}
-			else if (targetPoint.y + (((height * scaleTo) + height) / 2) + yTo > FlxG.worldBounds.height)
+			else if (targetPoint.y + (((height * scaleTo) + height) / 2) + yTo > FX.worldBounds.height)
 			{
-				targetPoint.y = FlxG.worldBounds.height - ((height * scaleTo) + height) / 2;
+				targetPoint.y = FX.worldBounds.height - ((height * scaleTo) + height) / 2;
 			}
 			else
 			{

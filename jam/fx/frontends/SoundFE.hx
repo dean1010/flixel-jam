@@ -1,5 +1,6 @@
 package jam.fx.frontends;
 
+import flixel.tweens.FlxTween;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.math.FlxPoint;
@@ -39,6 +40,11 @@ class SoundFE
 	var soundMap:Map<String, Float> = new Map<String, Float>();
 
 	/**
+	 * Master volume of all sounds and music used for fading during state transitions.
+	 */
+	var masterVolume:Float = 1;
+
+	/**
 	 * Functions for playing sounds and music.
 	 * @param range The furthest distance from target to player that sound will be heard 
 	 *              when calculating sound proximity if target and player are specified.
@@ -64,7 +70,8 @@ class SoundFE
 	 * Plays a sound, or an Array of sounds.
 	 * If `sound` is a CSV string (`"s1, s2, s3"`) it will be split into an Array and will either be played
 	 * in succession, or if `random = true`, one random sound from the array is played. If optional `target`
-	 * and `player` are specified the volume and pan are calculated according to their proximity.
+	 * and `player` are specified the volume and pan are calculated according to their proximity. 
+	 * WARNING - WILL RETURN `null` IF OUT OF RANGE!
 	 * @param sound       The sound(s) to play.
 	 * @param volume      The volume of the sound (before proximity calculation, if proximity is used).
 	 * @param target      Optional target `FlxObject` that sound comes from. If `null`, proximity is ignored.
@@ -90,6 +97,7 @@ class SoundFE
 			if (random)
 			{
 				var i = FlxG.random.int(0, sounds.length - 1);
+				volume *= masterVolume;
 				return play(sounds[i], volume, target, player, false, looped, group, autoDestroy, onComplete);
 			}
 			else
@@ -101,8 +109,13 @@ class SoundFE
 
 		if (justPlayed(sound))
 		{
-			return null;
+			if (onComplete != null)
+				return FlxG.sound.play(sound, 0, looped, group, autoDestroy, onComplete);
+			else
+				return null;
 		}
+
+		volume *= masterVolume;
 
 		if (target == null || player == null)
 		{
@@ -151,6 +164,8 @@ class SoundFE
 	 */
 	public function playSounds(sounds:Array<String>, volume:Float = 1.0, ?target:FlxObject, ?player:FlxObject, ?group:FlxSoundGroup, autoDestroy:Bool = true, ?onComplete:Void->Void, index:Int = 0):Void
 	{
+		volume *= masterVolume;
+
 		if (index < sounds.length)
 		{
 			play(sounds[index], volume, target, player, false, false, group, autoDestroy, function()
@@ -165,15 +180,35 @@ class SoundFE
 	}
 
 	/**
-	 * Play music. Same as `FlxG.sound.playMusic(music, volume, looped, group)`.
+	 * Play music. Same as `FlxG.sound.playMusic(music, volume, looped, group)` but returns the music id.
 	 * @param sound  The sound file you want to loop in the background.
 	 * @param volume How loud the sound should be, from 0 to 1. Default is `1`.
 	 * @param looped Whether to loop this music. Default is `true`.
 	 * @param group  Optional group to add this sound to. Default is `FlxG.sound.defaultMusicGroup`.
+	 * @return Music id String.
 	 */
-	public function playMusic(music:String, volume:Float = 1, looped:Bool = true, ?group:FlxSoundGroup):Void
+	public function playMusic(music:String, volume:Float = 1, looped:Bool = true, ?group:FlxSoundGroup):String
 	{
 		FlxG.sound.playMusic(music, volume, looped, group);
+		return music;
+	}
+
+	/**
+	 * Fade all sounds and music in or out. This fades the sound/music groups 
+	 * and any new sounds played during the fade.
+	 * @param fadeIn     Whether to fade in or out. Default is `false` (fade out).
+	 * @param duration   Fade duration. Default is `1`.
+	 * @param soundGroup Optional sound group to fade. Defaults to `FlxG.sound.defaultSoundGroup`.
+	 * @param musicGroup Optional music group to fade. Defaults to `FlxG.sound.defaultMusicGroup`.
+	 */
+	public function fade(fadeIn:Bool = false, duration:Float = 1, ?soundGroup:FlxSoundGroup, ?musicGroup:FlxSoundGroup):Void
+	{
+		var sGroup = (soundGroup == null) ? FlxG.sound.defaultSoundGroup : soundGroup;
+		var mGroup = (musicGroup == null) ? FlxG.sound.defaultMusicGroup : musicGroup;
+		var toVolume = (fadeIn) ? 1 : 0;
+		FlxTween.tween(this, { masterVolume: toVolume }, duration);
+		FlxTween.tween(sGroup, { volume: toVolume }, duration);
+		FlxTween.tween(mGroup, { volume: toVolume }, duration);
 	}
 
 	/**
