@@ -107,12 +107,9 @@ class SoundFE
 			}
 		}
 
-		if (justPlayed(sound))
+		if (justPlayed(sound) && onComplete == null)
 		{
-			if (onComplete != null)
-				return FlxG.sound.play(sound, 0, looped, group, autoDestroy, onComplete);
-			else
-				return null;
+			return null;
 		}
 
 		volume *= masterVolume;
@@ -132,7 +129,10 @@ class SoundFE
 			targetPoint.put();
 			playerPoint.put();
 
-			return null;
+			if (onComplete != null)
+				return FlxG.sound.play(sound, 0, looped, group, autoDestroy, onComplete);
+			else
+				return null;
 		}
 
 		var vol = FlxMath.bound(1 - (distance / range), 0, 1) * volume;
