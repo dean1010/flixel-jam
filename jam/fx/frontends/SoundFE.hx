@@ -60,7 +60,7 @@ class SoundFE
 		{
 			var p1 = FlxPoint.get(0, 0);
 			var p2 = FlxPoint.get(FlxG.width, FlxG.height);
-			this.range = p1.distanceTo(p2);
+			this.range = p1.distanceTo(p2) * 0.75;
 			p1.put();
 			p2.put();
 		}
