@@ -18,7 +18,7 @@ class SoundFE
 {
 	/**
 	 * The maximum distance from the target that sound will be heard when calculating
-	 * sound proximity. Defaults to the distance from the screens opposite corners.
+	 * sound proximity. Defaults to 75% of the distance from the screens opposite corners.
 	 */
 	public var range:Float = 0;
 
@@ -107,9 +107,12 @@ class SoundFE
 			}
 		}
 
-		if (justPlayed(sound) && onComplete == null)
+		if (!looped)
 		{
-			return null;
+			if (justPlayed(sound) && onComplete == null)
+			{
+				return null;
+			}
 		}
 
 		volume *= masterVolume;
@@ -224,10 +227,10 @@ class SoundFE
 		var now:Float = Sys.time() * 1000;
 		#end
 
-		if (maxSoundMapSize > 0 && Lambda.count(soundMap) >= maxSoundMapSize)
-		{
-			clearSoundMap();
-		}
+	//	if (maxSoundMapSize > 0 && Lambda.count(soundMap) >= maxSoundMapSize)
+	//	{
+	//		clearSoundMap();
+	//	}
 
 		if (soundMap[sound] >= now - soundThreshold)
 		{
