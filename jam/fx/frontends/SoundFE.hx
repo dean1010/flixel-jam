@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
+import flixel.system.FlxAssets.FlxSoundAsset;
 import flixel.system.FlxSound;
 import flixel.system.FlxSoundGroup;
 
@@ -26,7 +27,7 @@ class SoundFE
 	 * Maximum size the soundMap will grow to before clearing sounds older than `soundThreshold`.
 	 * Set to 0 to never clear it.
 	 */
-	public var maxSoundMapSize = 20;
+	public var maxSoundMapSize = 0;
 
 	/**
 	 * If the sound played since this value (in milliseconds) it will be skipped, preventing
@@ -40,15 +41,15 @@ class SoundFE
 	var soundMap:Map<String, Float> = new Map<String, Float>();
 
 	/**
-	 * Master volume of all sounds and music used for fading during state transitions.
+	 * Master volume of all sounds and music used when fading during state transitions.
 	 */
 	var masterVolume:Float = 1;
 
 	/**
 	 * Functions for playing sounds and music.
-	 * @param range The furthest distance from target to player that sound will be heard 
-	 *              when calculating sound proximity if target and player are specified.
-	 *              Optional. Defaults to 75% the distance from the screens opposite corners, if left `null`.
+	 * @param range Optional furthest distance from target to player that sound will be heard when 
+	 *              calculating sound proximity if target and player are specified.
+	 *              Defaults to 75% the distance from the screens opposite corners if left `null`.
 	 */
 	public function new(?range:Float)
 	{
@@ -67,52 +68,24 @@ class SoundFE
 	}
 
 	/**
-	 * Plays a sound, or an Array of sounds.
-	 * If `sound` is a CSV string (`"s1, s2, s3"`) it will be split into an Array and will either be played
-	 * in succession, or if `random = true`, one random sound from the array is played. If optional `target`
-	 * and `player` are specified the volume and pan are calculated according to their proximity. 
+	 * Plays a sound with optional sound proximity.
+	 * If optional `target` and `player` are specified the volume and pan are calculated according to their proximity. 
 	 * WARNING - WILL RETURN `null` IF OUT OF RANGE!
-	 * @param sound       The sound(s) to play.
+	 * @param sound       The sound id to play.
 	 * @param volume      The volume of the sound (before proximity calculation, if proximity is used).
 	 * @param target      Optional target `FlxObject` that sound comes from. If `null`, proximity is ignored.
 	 * @param player      Optional player `FlxObject` that sound is heard by. If `null`, proximity is ignored.
-	 * @param random      Ignored unless `sound` is a CSV. `false` plays all in succession. Default is `true`.
 	 * @param looped      Whether to loop the sound. Default is `false`.
 	 * @param group       Optional soundGroup to add the sounds to. Default is `FlxG.sound.defaultSoundGroup`.
 	 * @param autoDestroy Whether to destroy the sound when finished playing. Default is `true`.
 	 * @param onComplete  Optional function to call when the sound completes.
-	 * @return The FlxSound object, or `null` if the sound is not played when out of range when using proximity.
+	 * @return The FlxSound object, or `null` if the sound is not played if out of range when using proximity.
 	 */
-	public function play(sound:String, volume:Float = 1, ?target:FlxObject, ?player:FlxObject, random:Bool = true, looped:Bool = false, ?group:FlxSoundGroup, autoDestroy:Bool = true, ?onComplete:Void->Void):FlxSound
+	public function play(sound:FlxSoundAsset, volume:Float = 1, ?target:FlxObject, ?player:FlxObject, looped:Bool = false, ?group:FlxSoundGroup, autoDestroy:Bool = true, ?onComplete:Void->Void):FlxSound
 	{
-		if (sound.indexOf(",") > 0)
+		if (!looped && justPlayed(sound) && onComplete == null)
 		{
-			var sounds = sound.split(",");
-
-			for (i in 0...sounds.length)
-			{
-				sounds[i] = StringTools.trim(sounds[i]);
-			}
-
-			if (random)
-			{
-				var i = FlxG.random.int(0, sounds.length - 1);
-				volume *= masterVolume;
-				return play(sounds[i], volume, target, player, false, looped, group, autoDestroy, onComplete);
-			}
-			else
-			{
-				playSounds(sounds, volume, target, player, group, autoDestroy, onComplete);
 				return null;
-			}
-		}
-
-		if (!looped)
-		{
-			if (justPlayed(sound) && onComplete == null)
-			{
-				return null;
-			}
 		}
 
 		volume *= masterVolume;
@@ -124,7 +97,6 @@ class SoundFE
 
 		var targetPoint = target.getMidpoint(FlxPoint.get());
 		var playerPoint = player.getMidpoint(FlxPoint.get());
-
 		var distance = playerPoint.distanceTo(targetPoint);
 
 		if (distance > range)
@@ -155,7 +127,7 @@ class SoundFE
 	}
 
 	/**
-	 * Play an array of sounds in succession, or one at random.
+	 * Play an array of sounds in succession.
 	 * @param sounds      Array of sounds to be played in succession.
 	 * @param volume      Volume of the sounds.
 	 * @param target      Optional target that the sound is coming from. If null, proximity is ignored.
@@ -165,13 +137,13 @@ class SoundFE
 	 * @param onComplete  Optional function to call after the last sound completes.
 	 * @param index       Gets incremented in this recursive function to play the next sound in the array.
 	 */
-	public function playSounds(sounds:Array<String>, volume:Float = 1.0, ?target:FlxObject, ?player:FlxObject, ?group:FlxSoundGroup, autoDestroy:Bool = true, ?onComplete:Void->Void, index:Int = 0):Void
+	public function playSounds(sounds:Array<FlxSoundAsset>, volume:Float = 1.0, ?target:FlxObject, ?player:FlxObject, ?group:FlxSoundGroup, autoDestroy:Bool = true, ?onComplete:Void->Void, index:Int = 0):Void
 	{
 		volume *= masterVolume;
 
 		if (index < sounds.length)
 		{
-			play(sounds[index], volume, target, player, false, false, group, autoDestroy, function()
+			play(sounds[index], volume, target, player, false, group, autoDestroy, function()
 			{
 				playSounds(sounds, volume, target, player, group, autoDestroy, onComplete, index + 1);
 			});
@@ -209,7 +181,9 @@ class SoundFE
 		var sGroup = (soundGroup == null) ? FlxG.sound.defaultSoundGroup : soundGroup;
 		var mGroup = (musicGroup == null) ? FlxG.sound.defaultMusicGroup : musicGroup;
 		var toVolume = (fadeIn) ? 1 : 0;
+
 		FlxTween.tween(this, { masterVolume: toVolume }, duration);
+
 		FlxTween.tween(sGroup, { volume: toVolume }, duration);
 		FlxTween.tween(mGroup, { volume: toVolume }, duration);
 	}
@@ -227,10 +201,10 @@ class SoundFE
 		var now:Float = Sys.time() * 1000;
 		#end
 
-	//	if (maxSoundMapSize > 0 && Lambda.count(soundMap) >= maxSoundMapSize)
-	//	{
-	//		clearSoundMap();
-	//	}
+		if (maxSoundMapSize > 0 && Lambda.count(soundMap) >= maxSoundMapSize)
+		{
+			clearSoundMap();
+		}
 
 		if (soundMap[sound] >= now - soundThreshold)
 		{
