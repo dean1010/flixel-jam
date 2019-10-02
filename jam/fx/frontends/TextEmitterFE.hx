@@ -22,7 +22,7 @@ class TextEmitterFE
 	 * @param color     Optional color for the text particles. Default is `0xFFFFFFFF` (white).
 	 * @param frequency How often to emit particles if > 0. Default is `0` and sets `explode = true`.
 	 * @param offset    Optional FlxPoint to offset the emitter.
-	 * @return This `FlxEmitter` instance.
+	 * @return The `FlxEmitter` instance.
 	 */
 	public function emit(emitter:TextEmitter, target:FlxObject, text:String, quantity:Int = 1, color:Int = 0xFFFFFFFF, frequency:Float = 0, ?offset:FlxPoint):FlxTypedEmitter<TextParticle>
 	{
@@ -34,7 +34,6 @@ class TextEmitterFE
 		}
 
 		emitter.emitter.color.set(color);
-
 		emitter.emitter.text = text;
 
 		if (target != null)
