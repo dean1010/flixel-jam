@@ -1,6 +1,6 @@
-![flixel-jam](/assets/images/flixel-jam-128.png)
+![flixel-jam](/assets/images/flixel-jam-128.png "flixel-jam")
 
-# f l i x e l - j a m
+# flixel-jam
 
 Custom library to use with [HaxeFlixel](https://github.com/HaxeFlixel/flixel) for game jams and quick prototyping.
 
