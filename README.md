@@ -1,4 +1,4 @@
-![flixel-jam](https://github.com/dean1010/flixel-jam/blob/master/assets/images/flixel-jam-128.png|alt=flixel-jam)
+![](/assets/images/flixel-jam-128.png)
 
 # flixel-jam
 
