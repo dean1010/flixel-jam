@@ -48,7 +48,7 @@ class SoundFE
 	 * Functions for playing sounds and music.
 	 * @param range The furthest distance from target to player that sound will be heard 
 	 *              when calculating sound proximity if target and player are specified.
-	 *              Defaults to the distance from the screens opposite corners.
+	 *              Optional. Defaults to 75% the distance from the screens opposite corners, if left `null`.
 	 */
 	public function new(?range:Float)
 	{
