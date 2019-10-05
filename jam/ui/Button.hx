@@ -13,7 +13,6 @@ class Button extends FlxUIButton
 	var textSize:Int = 10;
 	var graphicAsset:FlxGraphicAsset = "default_button";
 	var sliceArray:Array<Array<Int>> = [[15, 15, 35, 35]];
-//	var sliceArray:Array<Array<Int>> = [[12, 12, 38, 38]];
 	var verticalTextAlign:VerticalTextAlign = VerticalTextAlign.CENTER;
 
 	/**
@@ -94,9 +93,15 @@ class Button extends FlxUIButton
 	}
 }
 
+/**
+ * Vertical alignment of the button text.
+ */
 enum VerticalTextAlign
 {
+	/** Vertical text alignment TOP */
 	TOP;
+	/** Vertical text alignment CENTER (Default) */
 	CENTER;
+	/** Vertical text alignment BOTTOM */
 	BOTTOM;
 }

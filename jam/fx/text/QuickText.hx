@@ -10,12 +10,12 @@ import flixel.tweens.FlxTween;
 import jam.fx.FX;
 
 /**
- * QuickText is a FlxText object that is recycled and emitted "like" a particle, but it's tweened.
+ * QuickText is a FlxText object that is recycled and tweened.
  */
 class QuickText extends FlxText
 {
 	/**
-	 * Instantiate a new QuickText object, a FlxText object that is recycled and emitted "like" a particle, but it's tweened.
+	 * Instantiate a new QuickText object.
 	 */
 	public function new()
 	{
@@ -25,69 +25,72 @@ class QuickText extends FlxText
 		wordWrap = false;
 	}
 
-	/** 
-	 * Emit a QuickText object at specified coordinates.
-	 * @param target     FlxObject to focus on.
-	 * @param text       Text to display.
-	 * @param color      Color of the text. Default is `0xFFFFFFFF`.
-	 * @param duration   Duration of the tween in seconds. Default is `1`.
-	 * @param scaleTo    Optional amount to scale the text. Default is `1`.
-	 * @param yTo        Amount to tween the text `y`. Negative numbers tween up. Default is `0`.
-	 * @param keepInView Whether to keep all text in view when near an edge. Default is `true`.
-	 * @param center     Whether to tween to center to camera (`true`), or to `yTo`. Default is `false`.
-	 * @param size       Size of the text before scaling. Default is `8`.
+	/**
+	 * Tween the recycled QuickText object.
+	 * @param target   FlxObject to focus on.
+	 * @param text     Text to display.
+	 * @param color    Color of the text. Default is `0xFFFFFFFF`.
+	 * @param duration Duration of the tween in seconds. Default is `1`.
+	 * @param scaleTo  Optional amount to scale the text. Default is `1`.
+	 * @param offsetTo FlxPoint to offset the text. Defaults to `(0, -20)`.
+	 * @param size     Size of the text before scaling. Default is `8`.
 	 */
-	public function emit(target:FlxObject, text:String, color:Int = 0xFFFFFFFF, duration:Float = 1, scaleTo:Float = 1, yTo:Float = 0, keepInView:Bool = true, center:Bool = false, size:Int = 8):Void
+	public function display(target:FlxObject, text:String, color:Int = 0xFFFFFFFF, duration:Float = 1, scaleTo:Float = 2, ?offsetTo:FlxPoint, size:Int = 8):Void
 	{
 		var targetPoint = target.getMidpoint(FlxPoint.get());
+		var screenBounds = FlxPoint.get(FX.worldBounds.width, FX.worldBounds.height);
 
 		this.color = color;
 		this.size = size;
 		this.text = text;
-		
+
+		if (offsetTo == null)
+		{
+			offsetTo = FlxPoint.get(0, -20);
+		}
+
 		scrollFactor.set(target.scrollFactor.x, target.scrollFactor.y);
 
-		alpha = 1;
-		scale.set(1, 1);
+		if (target.scrollFactor.x == 0)
+		{
+			screenBounds.set(FlxG.width, FlxG.height);
+		}
 
 		targetPoint.x = targetPoint.x - (width / 2);
 		targetPoint.y = targetPoint.y - (height / 2);
 
 		reset(targetPoint.x, targetPoint.y);
 
-		if (center)
+		if (targetPoint.x - (((width * scaleTo) - width) / 2) + offsetTo.x < 0)
 		{
-			targetPoint.x = ((FlxG.width - width) / 2) + camera.scroll.x;
-			targetPoint.y = ((FlxG.height - height) / 2) + camera.scroll.y;
+			targetPoint.x = ((width * scaleTo) - width) / 2;
 		}
-		else if (keepInView)
+		else if (targetPoint.x + (((width * scaleTo) + width) / 2) + offsetTo.x > screenBounds.x)
 		{
-			if (targetPoint.x - ((width * scaleTo) - width) / 2 < 0)
-			{
-				targetPoint.x = ((width * scaleTo) - width) / 2;
-			}
-			else if (targetPoint.x + (((width * scaleTo) + width) / 2) > FX.worldBounds.width)
-			{
-				targetPoint.x = FX.worldBounds.width - ((width * scaleTo) + width) / 2;
-			}
-
-			if (targetPoint.y - (((height * scaleTo) - height) / 2) + yTo < 0)
-			{
-				targetPoint.y = ((height * scaleTo) - height) / 2;
-			}
-			else if (targetPoint.y + (((height * scaleTo) + height) / 2) + yTo > FX.worldBounds.height)
-			{
-				targetPoint.y = FX.worldBounds.height - ((height * scaleTo) + height) / 2;
-			}
-			else
-			{
-				targetPoint.y += yTo;
-			}
+			targetPoint.x = screenBounds.x - ((width * scaleTo) + width) / 2;
 		}
 		else
 		{
-			targetPoint.y += yTo;
+			targetPoint.add(offsetTo.x, 0);
 		}
+
+		if (targetPoint.y - (((height * scaleTo) - height) / 2) + offsetTo.y < 0)
+		{
+			targetPoint.y = ((height * scaleTo) - height) / 2;
+		}
+		else if (targetPoint.y + (((height * scaleTo) + height) / 2) + offsetTo.y > screenBounds.y)
+		{
+			targetPoint.y = screenBounds.y - ((height * scaleTo) + height) / 2;
+		}
+		else
+		{
+			targetPoint.add(0, offsetTo.y);
+		}
+
+		screenBounds.put();
+		offsetTo.put();
+
+		scale.set(0.1, 0.1);
 
 		FlxTween.tween(this,
 			{
@@ -95,30 +98,24 @@ class QuickText extends FlxText
 				y: targetPoint.y,
 				"scale.x": scaleTo,
 				"scale.y": scaleTo
-			}, duration * 0.5)
+			}, duration * 0.7,
+			{
+				ease: FlxEase.bounceOut
+			})
+			.wait(0.2)
 			.then(
 				FlxTween.tween(this, 
 				{
-					alpha: 0.0, 
-					"scale.x": 2 / scaleTo, 
-					"scale.y": 2 / scaleTo
-				}, duration * 0.5, 
+					"scale.x": 0.1, 
+					"scale.y": 1
+				}, duration * 0.1, 
 				{
-					type: FlxTweenType.ONESHOT, 
-					onComplete: tweenComplete.bind(_, targetPoint)
+					onComplete: function (tween:FlxTween)
+								{
+									kill();
+									targetPoint.put();
+								}
 				})
 		);
-	}
-
-	/**
-	 * Cleanup when done with the tween.
-	 * @param tween       Tween that is complete.
-	 * @param targetPoint The targetPoint needs to be `put()` back in the pool.
-	 */
-	function tweenComplete(tween:FlxTween, targetPoint:FlxPoint):Void
-	{
-		kill();
-		targetPoint.put();
-		if (tween != null) tween.destroy();
 	}
 }

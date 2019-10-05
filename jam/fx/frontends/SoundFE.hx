@@ -1,19 +1,19 @@
 package jam.fx.frontends;
 
-import flixel.tweens.FlxTween;
 import flixel.FlxG;
 import flixel.FlxObject;
-import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
 import flixel.system.FlxAssets.FlxSoundAsset;
 import flixel.system.FlxSound;
 import flixel.system.FlxSoundGroup;
+import flixel.tweens.FlxTween;
 
 /**
  * FX frontend for playing sound(s) with `FX.sound.play(...)`. 
  * Can optionally play an array of sounds, in succession or one at random.
- * Can optionally specify target and player to automatically calculate sound proximity.
- * Sounds are prevented from playing the same sound at the same time.
+ * You can optionally specify the target and player to automatically calculate sound proximity for quick, one time sounds.
+ * Sounds are prevented from playing the same sound at or near the same time according to `soundThreshold` time.
  */
 class SoundFE
 {
@@ -41,9 +41,9 @@ class SoundFE
 	var soundMap:Map<String, Float> = new Map<String, Float>();
 
 	/**
-	 * Master volume of all sounds and music used when fading during state transitions.
+	 * Master volume of all sounds and music that gets tweened to 0 or 1 with `fade()`.
 	 */
-	var masterVolume:Float = 1;
+	var fadeVolume:Float = 1;
 
 	/**
 	 * Functions for playing sounds and music.
@@ -88,7 +88,7 @@ class SoundFE
 				return null;
 		}
 
-		volume *= masterVolume;
+		volume *= fadeVolume;
 
 		if (target == null || player == null)
 		{
@@ -121,9 +121,8 @@ class SoundFE
 		var soundObj = FlxG.sound.load(sound, vol, looped, group, autoDestroy, false, null, onComplete);
 
 		soundObj.pan = pan;
-		soundObj.play(true);
 
-		return soundObj;
+		return soundObj.play(true);
 	}
 
 	/**
@@ -139,7 +138,7 @@ class SoundFE
 	 */
 	public function playSounds(sounds:Array<FlxSoundAsset>, volume:Float = 1.0, ?target:FlxObject, ?player:FlxObject, ?group:FlxSoundGroup, autoDestroy:Bool = true, ?onComplete:Void->Void, index:Int = 0):Void
 	{
-		volume *= masterVolume;
+		volume *= fadeVolume;
 
 		if (index < sounds.length)
 		{
@@ -164,15 +163,16 @@ class SoundFE
 	 */
 	public function playMusic(music:String, volume:Float = 1, looped:Bool = true, ?group:FlxSoundGroup):String
 	{
+		volume *= fadeVolume;
 		FlxG.sound.playMusic(music, volume, looped, group);
 		return music;
 	}
 
 	/**
 	 * Fade all sounds and music in or out. This fades the sound/music groups 
-	 * and any new sounds played during the fade.
+	 * and any new sounds or music started during the fade.
 	 * @param fadeIn     Whether to fade in or out. Default is `false` (fade out).
-	 * @param duration   Fade duration. Default is `1`.
+	 * @param duration   Fade duration in seconds . Default is `1`.
 	 * @param soundGroup Optional sound group to fade. Defaults to `FlxG.sound.defaultSoundGroup`.
 	 * @param musicGroup Optional music group to fade. Defaults to `FlxG.sound.defaultMusicGroup`.
 	 */
@@ -182,14 +182,14 @@ class SoundFE
 		var mGroup = (musicGroup == null) ? FlxG.sound.defaultMusicGroup : musicGroup;
 		var toVolume = (fadeIn) ? 1 : 0;
 
-		FlxTween.tween(this, { masterVolume: toVolume }, duration);
+		FlxTween.tween(this, { fadeVolume: toVolume }, duration);
 
 		FlxTween.tween(sGroup, { volume: toVolume }, duration);
 		FlxTween.tween(mGroup, { volume: toVolume }, duration);
 	}
 
 	/**
-	 * Check if a sound has just played within the soundThreshold to prevent playing twice ~ same time.
+	 * Check if a sound has just played within the `soundThreshold` to prevent playing twice ~ same time.
 	 * @param sound The sound to check if it just played.
 	 * @return Whether this sound just played, `true` or `false`.
 	 */

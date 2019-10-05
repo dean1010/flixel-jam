@@ -2,39 +2,37 @@ package jam.fx.frontends;
 
 import flixel.FlxObject;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.math.FlxPoint;
 import jam.fx.text.QuickText;
 
 /**
- * FX frontend for emitting a quickText with `FX.quickText.emit(...)`.
+ * FX frontend for displaying a quickText with `FX.quickText.display(...)`.
  */
 class QuickTextFE extends FlxTypedGroup<QuickText>
 {
 	/**
 	 * Instantiates a FlxTypedGroup of QuickText objects.
-	 * @param maxSize   Maximum number of members. Default is `0`, meaning no maximum.
 	 */
-	public function new(maxSize:Int = 0)
+	public function new()
 	{
-		super(maxSize);
+		super();
 	}
 
-	/** 
-	 * Recycle and tween a QuickText object at specified coordinates. See QuickText class for the `emit()` function.
-	 * @param target     FlxObject to focus on.
-	 * @param text       Text to display.
-	 * @param color      Color of the text. Default is `0xFFFFFFFF`.
-	 * @param duration   Duration of the tween in seconds. Default is `1`.
-	 * @param scaleTo    Optional amount to scale the text. Default is `1`.
-	 * @param yTo        Amount to tween the text `y`. Negative numbers tween up. Default is `0`.
-	 * @param keepInView Whether to move the quickText to keep all text in view. Default is `true`.
-	 * @param center     Whether to tween to center screen or tween to `yTo`. Default is `false`.
-	 * @param size       Size of the text before scaling. Default is `8`.
+	/**
+	 * Recycle and tween a QuickText object at specified coordinates. See QuickText class for the `display()` function.
+	 * @param target   FlxObject to focus on.
+	 * @param text     Text to display.
+	 * @param color    Color of the text. Default is `0xFFFFFFFF`.
+	 * @param duration Duration of the tween in seconds. Default is `1`.
+	 * @param scaleTo  Optional amount to scale the text. Default is `1`.
+	 * @param offsetTo FlxPoint to offset the text. Defaults to `(0, -20)`.
+	 * @param size     Size of the text before scaling. Default is `8`.
 	 */
-	public function emit(target:FlxObject, text:String = "", color:Int = 0xFFFFFFFF, duration:Float = 1, scaleTo:Float = 1, yTo:Float = 0, keepInView:Bool = true, center:Bool = false, size:Int = 8):Void
+	public function display(target:FlxObject, text:String = "", color:Int = 0xFFFFFFFF, duration:Float = 1, scaleTo:Float = 2, ?offsetTo:FlxPoint, size:Int = 8):Void
 	{
 		var qt = recycle(QuickText);
 		toTop(qt);
-		qt.emit(target, text, color, duration, scaleTo, yTo, keepInView, center, size);
+		qt.display(target, text, color, duration, scaleTo, offsetTo, size);
 	}
 
 	/**
