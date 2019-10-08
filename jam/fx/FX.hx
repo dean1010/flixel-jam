@@ -27,7 +27,7 @@ class FX
 	#if FLX_SOUND_SYSTEM
 	/**
 	 * Functions for playing sound(s) with optional proximity with quick, non-looped sounds and additional features.
-	 */
+ 	 */
 	public static var sound(default, null):SoundFE;
 	#end
 
