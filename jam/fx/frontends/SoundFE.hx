@@ -85,7 +85,7 @@ class SoundFE
 	{
 		if (!looped && justPlayed(sound) && onComplete == null)
 		{
-				return null;
+			return null;
 		}
 
 		volume *= fadeVolume;

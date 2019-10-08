@@ -24,11 +24,11 @@ class QuickTextFE extends FlxTypedGroup<QuickText>
 	 * @param text     Text to display.
 	 * @param color    Color of the text. Default is `0xFFFFFFFF`.
 	 * @param duration Duration of the tween in seconds. Default is `1`.
-	 * @param scaleTo  Optional amount to scale the text. Default is `1`.
+	 * @param scaleTo  Optional amount to scale the text. Default is `1.5`.
 	 * @param offsetTo FlxPoint to offset the text. Defaults to `(0, -20)`.
 	 * @param size     Size of the text before scaling. Default is `8`.
 	 */
-	public function display(target:FlxObject, text:String = "", color:Int = 0xFFFFFFFF, duration:Float = 1, scaleTo:Float = 2, ?offsetTo:FlxPoint, size:Int = 8):Void
+	public function display(target:FlxObject, text:String = "", color:Int = 0xFFFFFFFF, duration:Float = 1, scaleTo:Float = 1.5, ?offsetTo:FlxPoint, size:Int = 8):Void
 	{
 		var qt = recycle(QuickText);
 		toTop(qt);

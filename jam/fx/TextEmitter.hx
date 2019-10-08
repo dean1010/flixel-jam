@@ -33,7 +33,7 @@ class TextEmitter
 	 * @param quantity  How many text particles to emit. Default is `1`.
 	 * @param frequency How often to emit a particle, if > 0. Default is `0` and sets `explode = true`.
 	 * @param offset    Optional FlxPoint to offset the emitter. If `target` is `null` the emitter will target this point.
-	 * @return This `TxtEmitter` instance.
+	 * @return The `TxtEmitter` instance.
 	 */
 	public function emit(?target:FlxObject, text:String, color:Int = 0xFFFFFFFF, quantity:Int = 1, frequency:Float = 0, ?offset:FlxPoint):FlxTypedEmitter<TextParticle>
 	{

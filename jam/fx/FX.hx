@@ -26,19 +26,19 @@ class FX
 
 	#if FLX_SOUND_SYSTEM
 	/**
-	 * Functions for playing sound(s) with additional features.
+	 * Functions for playing sound(s) with optional proximity with quick, non-looped sounds and additional features.
 	 */
 	public static var sound(default, null):SoundFE;
 	#end
 
 	/** 
-	 * Target an object and emit a TextParticle with specified `text` and optional `color` argument.
+	 * Target an object and emit a `TextParticle` with specified `text` and optional `color`.
 	 */
 	public static var textEmitter(default, null):TextEmitterFE;
 
 	/** 
-	 * [0xFF666666, 0xFFff2d2d, 0xFFff8000, 0xFFffcc00, 0xFFb9ee19, 0xFF3ef1f6, 0xFFd082ff]
 	 * Color array for emitters and other color scheme items, like guns, gems, bullets, etc.
+	 * [0xFF666666, 0xFFff2d2d, 0xFFff8000, 0xFFffcc00, 0xFFb9ee19, 0xFF3ef1f6, 0xFFd082ff]
 	 */
 	public static var colors:Array<Int> = [
 		0xFF666666,
@@ -73,22 +73,25 @@ class FX
 	}
 
 	/**
-	 * Initialize the frontend classes.
-	 * @param colorScheme Color array for emitters and color scheme items, like guns, gems, bullets, etc.
-	 * @param state       Optional FlxState if you want the quickText FlxGroup added here. 
+	 * Initialize the frontend classes. If including the optional state argument, this function should be placed 
+	 * at the end of the `state#create()` method so the quickText will display above other layers. 
+	 * Alternately, you can put `FX.init()` at begining, and add `add(FX.quickText)`, at the end of `state#create()`. 
+	 * @param colors Color array for emitters and other color scheme items, like guns, gems, bullets, etc.
+	 * @param state Optional FlxState if you want the quickText FlxGroup added here. 
 	 * Typically, you want the quickText group on top of z-order, so add() it accordingly.
 	 * Alternately, you can add it in your state with `add(FX.quickText)` at the end of `create()`.
 	 */
-	public static function init(?colorScheme:Array<Int>, ?state:FlxState):Void
+	public static function init(?colors:Array<Int>, ?state:FlxState):Void
+//	public static function init(?state:FlxState):Void
 	{
-		if (colorScheme != null) colors = colorScheme;
-		if (state != null) state.add(quickText);
-
 		emitter = new EmitterFE();
 		quickText = new QuickTextFE();
 		textEmitter = new TextEmitterFE();
 		#if FLX_SOUND_SYSTEM
 		sound = new SoundFE();
 		#end
+
+		if (colors != null) FX.colors = colors;
+		if (state != null) state.add(quickText);
 	}
 }

@@ -49,7 +49,7 @@ class TextTicker extends FlxSpriteGroup
 			lineStyle = {thickness: border, color: borderColor};
 		}
 
-		var textSize = Math.round(height - (border * 2) - 1);
+		var textSize = Math.round(height - (border * 2) - 3);
 
 		tf = new FlxText(width, 0, 0, textString, textSize);
 		tf.color = textColor;
@@ -62,9 +62,6 @@ class TextTicker extends FlxSpriteGroup
 	#if (windows||neko)
 		stampY -= 1;
 	#end
-
-	//	stampY += (upperCase) ? 1 : 0;
-	//	trace(stampY);
 
 		add(ticker);
 	}
