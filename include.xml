@@ -2,8 +2,6 @@
 
 <project>
 
-	<assets path="assets/images/ui/default_button_50x50.png" rename="default_button" embed="true" />
-	<assets path="assets/images/ui/default_panel_50x50.png"  rename="default_panel"  embed="true" />
-	<assets path="assets/images/ui/default_bg_800x494.png"   rename="default_bg"     embed="true" />
+<!-- Add assets paths here if needed -->
 
 </project>
