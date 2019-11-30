@@ -18,8 +18,18 @@ import flixel.tweens.FlxTween;
 class SoundFE
 {
 	/**
+	 * FlxSoundGroup for menu sound fx.
+	 */
+	public var menuSoundGroup:FlxSoundGroup;
+
+	/**
+	 * FlxSoundGroup for menu music.
+	 */
+	public var menuMusicGroup:FlxSoundGroup;
+
+	/**
 	 * The maximum distance from the target that sound will be heard when calculating
-	 * sound proximity. Defaults to 75% of the distance from the screens opposite corners.
+	 * sound proximity. Defaults to the distance from the screens opposite corners.
 	 */
 	public var range:Float = 0;
 
@@ -43,13 +53,13 @@ class SoundFE
 	/**
 	 * Master volume of all sounds and music that gets tweened to 0 or 1 with `fade()`.
 	 */
-	var fadeVolume:Float = 1;
+	public var fadeVolume:Float = 1;
 
 	/**
 	 * Functions for playing sounds and music.
 	 * @param range Optional furthest distance from target to player that sound will be heard when 
 	 *              calculating sound proximity if target and player are specified.
-	 *              Defaults to 75% the distance from the screens opposite corners if left `null`.
+	 *              Defaults to the distance from the screens opposite corners.
 	 */
 	public function new(?range:Float)
 	{
@@ -61,7 +71,7 @@ class SoundFE
 		{
 			var p1 = FlxPoint.get(0, 0);
 			var p2 = FlxPoint.get(FlxG.width, FlxG.height);
-			this.range = p1.distanceTo(p2) * 0.75;
+			this.range = p1.distanceTo(p2);
 			p1.put();
 			p2.put();
 		}
@@ -172,7 +182,7 @@ class SoundFE
 	 * Fade all sounds and music in or out. This fades the sound/music groups 
 	 * and any new sounds or music started during the fade.
 	 * @param fadeIn     Whether to fade in or out. Default is `false` (fade out).
-	 * @param duration   Fade duration in seconds . Default is `1`.
+	 * @param duration   Fade duration in seconds. Default is `1`.
 	 * @param soundGroup Optional sound group to fade. Defaults to `FlxG.sound.defaultSoundGroup`.
 	 * @param musicGroup Optional music group to fade. Defaults to `FlxG.sound.defaultMusicGroup`.
 	 */
@@ -182,10 +192,9 @@ class SoundFE
 		var mGroup = (musicGroup == null) ? FlxG.sound.defaultMusicGroup : musicGroup;
 		var toVolume = (fadeIn) ? 1 : 0;
 
-		FlxTween.tween(this, { fadeVolume: toVolume }, duration);
-
-		FlxTween.tween(sGroup, { volume: toVolume }, duration);
-		FlxTween.tween(mGroup, { volume: toVolume }, duration);
+		FlxTween.tween(this,   { fadeVolume: toVolume }, duration);
+		FlxTween.tween(sGroup, { volume: toVolume },     duration);
+		FlxTween.tween(mGroup, { volume: toVolume },     duration);
 	}
 
 	/**
