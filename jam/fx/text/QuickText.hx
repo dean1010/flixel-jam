@@ -29,13 +29,13 @@ class QuickText extends FlxText
 	 * Tween the recycled QuickText object.
 	 * @param target   FlxObject to focus on.
 	 * @param text     Text to display.
-	 * @param color    Color of the text. Default is `0xFFFFFFFF`.
 	 * @param duration Duration of the tween in seconds. Default is `1`.
+	 * @param color    Color of the text. Default is `0xFFFFFF00`.
 	 * @param scaleTo  Optional amount to scale the text. Default is `1.5`.
 	 * @param offsetTo FlxPoint to offset the text. Defaults to `(0, -20)`.
 	 * @param size     Size of the text before scaling. Default is `8`.
 	 */
-	public function display(target:FlxObject, text:String, color:Int = 0xFFFFFFFF, duration:Float = 1, scaleTo:Float = 1.5, ?offsetTo:FlxPoint, size:Int = 8):Void
+	public function display(target:FlxObject, text:String, duration:Float = 1, color:Int = 0xFFFFFF00, scaleTo:Float = 1.5, ?offsetTo:FlxPoint, size:Int = 8):Void
 	{
 		var targetPoint = target.getMidpoint(FlxPoint.get());
 		var screenBounds = FlxPoint.get(FX.worldBounds.width, FX.worldBounds.height);
@@ -98,17 +98,17 @@ class QuickText extends FlxText
 				y: targetPoint.y,
 				"scale.x": scaleTo,
 				"scale.y": scaleTo
-			}, duration * 0.6,
+			}, 0.4, 
 			{
 				ease: FlxEase.bounceOut
 			})
-			.wait(0.2)
+			.wait(duration - 0.5)
 			.then(
 				FlxTween.tween(this, 
 				{
 					"scale.x": 0.1, 
 					"scale.y": 1
-				}, duration * 0.2, 
+				}, 0.1, 
 				{
 					onComplete: function (tween:FlxTween)
 								{

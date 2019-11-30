@@ -13,26 +13,26 @@ class QuickTextFE extends FlxTypedGroup<QuickText>
 	/**
 	 * Instantiates a FlxTypedGroup of QuickText objects.
 	 */
-	public function new()
+	public function new(maxSize:Int = 0)
 	{
-		super();
+		super(maxSize);
 	}
 
 	/**
 	 * Recycle and tween a QuickText object at specified coordinates. See QuickText class for the `display()` function.
 	 * @param target   FlxObject to focus on.
 	 * @param text     Text to display.
-	 * @param color    Color of the text. Default is `0xFFFFFFFF`.
 	 * @param duration Duration of the tween in seconds. Default is `1`.
+	 * @param color    Color of the text. Default is `0xFFFFFF00`.
 	 * @param scaleTo  Optional amount to scale the text. Default is `1.5`.
 	 * @param offsetTo FlxPoint to offset the text. Defaults to `(0, -20)`.
 	 * @param size     Size of the text before scaling. Default is `8`.
 	 */
-	public function display(target:FlxObject, text:String = "", color:Int = 0xFFFFFFFF, duration:Float = 1, scaleTo:Float = 1.5, ?offsetTo:FlxPoint, size:Int = 8):Void
+	public function display(target:FlxObject, text:String = "", duration:Float = 1, color:Int = 0xFFFFFF00, scaleTo:Float = 1.5, ?offsetTo:FlxPoint, size:Int = 8):Void
 	{
 		var qt = recycle(QuickText);
 		toTop(qt);
-		qt.display(target, text, color, duration, scaleTo, offsetTo, size);
+		qt.display(target, text, duration, color, scaleTo, offsetTo, size);
 	}
 
 	/**
