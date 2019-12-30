@@ -21,7 +21,7 @@ class QuickText extends FlxText
 	{
 		super();
 
-		setBorderStyle(FlxTextBorderStyle.OUTLINE_FAST, 0xFF000000, 1, 0);
+		setBorderStyle(FlxTextBorderStyle.OUTLINE, 0xFF000000, 1, 0);
 		wordWrap = false;
 	}
 
