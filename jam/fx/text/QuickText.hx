@@ -98,17 +98,17 @@ class QuickText extends FlxText
 				y: targetPoint.y,
 				"scale.x": scaleTo,
 				"scale.y": scaleTo
-			}, 0.4, 
+			}, duration * 0.3, 
 			{
 				ease: FlxEase.bounceOut
 			})
-			.wait(duration - 0.5)
+			.wait(duration * 0.6)
 			.then(
 				FlxTween.tween(this, 
 				{
 					"scale.x": 0.1, 
 					"scale.y": 1
-				}, 0.1, 
+			}, duration * 0.1, 
 				{
 					onComplete: function (tween:FlxTween)
 								{

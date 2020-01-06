@@ -43,7 +43,7 @@ class SoundFE
 	 * If the sound played since this value (in milliseconds) it will be skipped, preventing
 	 * the same sound from playing twice at ~ the same time.
 	 */
-	public var soundThreshold:Int = 30;
+	public var soundThreshold:Int = 50;
 
 	/**
 	 * Keep track of sounds and time they played to avoid the same sound playing ~ the same time.
