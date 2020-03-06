@@ -41,7 +41,7 @@ class FX
 	 * [0xFF666666, 0xFFff2d2d, 0xFFff8000, 0xFFffcc00, 0xFFb9ee19, 0xFF3ef1f6, 0xFFd082ff]
 	 */
 	public static var colors:Array<Int> = [
-		0xFF666666,
+		0xFF333333,
 		0xFFff2222,
 		0xFFff8000,
 		0xFFffdd00,

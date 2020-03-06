@@ -37,7 +37,7 @@ class SoundFE
 	 * Maximum size the soundMap will grow to before clearing sounds older than `soundThreshold`.
 	 * Set to 0 to never clear it.
 	 */
-	public var maxSoundMapSize = 0;
+	public var maxSoundMapSize = 32;
 
 	/**
 	 * If the sound played since this value (in milliseconds) it will be skipped, preventing

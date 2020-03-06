@@ -53,8 +53,6 @@ class TextTicker extends FlxSpriteGroup
 
 		tf = new FlxText(width, 0, 0, textString, textSize);
 		tf.color = textColor;
-		tf.autoSize = true;
-		tf.wordWrap = false;
 
 		ticker = new FlxSprite(x, y).makeGraphic(Math.round(width), Math.round(height), bgColor, true);
 		stampY = Math.round((ticker.height - tf.height) / 2);
