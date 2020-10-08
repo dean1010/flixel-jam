@@ -41,7 +41,8 @@ class SoundFE
 
 	/**
 	 * If the sound played since this value (in milliseconds) it will be skipped, preventing
-	 * the same sound from playing twice at ~ the same time.
+	 * the same sound from playing twice at ~ the same time. Set to 0 to ignore justPlayed() 
+	 * and all sounds will always play.
 	 */
 	public var soundThreshold:Int = 50;
 
@@ -49,6 +50,11 @@ class SoundFE
 	 * Keep track of sounds and time they played to avoid the same sound playing ~ the same time.
 	 */
 	var soundMap:Map<String, Float> = new Map<String, Float>();
+
+	/**
+	 * Keep track of soundMap length to avoid using Lambda.count().
+	 */
+	var soundMapLength:Int = 0;
 
 	/**
 	 * Master volume of all sounds and music that gets tweened to 0 or 1 with `fade()`.
@@ -93,7 +99,7 @@ class SoundFE
 	 */
 	public function play(sound:FlxSoundAsset, volume:Float = 1, ?target:FlxObject, ?player:FlxObject, looped:Bool = false, ?group:FlxSoundGroup, autoDestroy:Bool = true, ?onComplete:Void->Void):FlxSound
 	{
-		if (!looped && justPlayed(sound) && onComplete == null)
+		if (justPlayed(sound) && !looped && onComplete == null)
 		{
 			return null;
 		}
@@ -181,20 +187,20 @@ class SoundFE
 	/**
 	 * Fade all sounds and music in or out. This fades the sound/music groups 
 	 * and any new sounds or music started during the fade.
-	 * @param fadeIn     Whether to fade in or out. Default is `false` (fade out).
 	 * @param duration   Fade duration in seconds. Default is `1`.
+	 * @param toVolume   Volume to fade to. Default is `0` (fade out).
 	 * @param soundGroup Optional sound group to fade. Defaults to `FlxG.sound.defaultSoundGroup`.
 	 * @param musicGroup Optional music group to fade. Defaults to `FlxG.sound.defaultMusicGroup`.
+	 * @param onComplete Optional function to call after the fade completes.
 	 */
-	public function fade(fadeIn:Bool = false, duration:Float = 1, ?soundGroup:FlxSoundGroup, ?musicGroup:FlxSoundGroup):Void
+	public function fade(duration:Float = 1, toVolume:Float = 0, ?soundGroup:FlxSoundGroup, ?musicGroup:FlxSoundGroup, ?onComplete:Null<TweenCallback>):Void
 	{
-		var sGroup = (soundGroup == null) ? FlxG.sound.defaultSoundGroup : soundGroup;
-		var mGroup = (musicGroup == null) ? FlxG.sound.defaultMusicGroup : musicGroup;
-		var toVolume = (fadeIn) ? 1 : 0;
+		if (soundGroup == null) soundGroup = FlxG.sound.defaultSoundGroup;
+		if (musicGroup == null) musicGroup = FlxG.sound.defaultMusicGroup;
 
-		FlxTween.tween(this,   { fadeVolume: toVolume }, duration);
-		FlxTween.tween(sGroup, { volume: toVolume },     duration);
-		FlxTween.tween(mGroup, { volume: toVolume },     duration);
+		FlxTween.tween(this,       { fadeVolume: toVolume }, duration, { onComplete: onComplete });
+		FlxTween.tween(soundGroup, { volume:     toVolume }, duration);
+		FlxTween.tween(musicGroup, { volume:     toVolume }, duration);
 	}
 
 	/**
@@ -204,13 +210,15 @@ class SoundFE
 	 */
 	private function justPlayed(sound:String):Bool
 	{
+		if (soundThreshold == 0) return false;
+
 		#if (flash || js)
 		var now:Float = Date.now().getTime();
 		#else
 		var now:Float = Sys.time() * 1000;
 		#end
 
-		if (maxSoundMapSize > 0 && Lambda.count(soundMap) >= maxSoundMapSize)
+		if (maxSoundMapSize > 0 && soundMapLength >= maxSoundMapSize)
 		{
 			clearSoundMap();
 		}
@@ -221,6 +229,7 @@ class SoundFE
 		}
 
 		soundMap[sound] = now;
+		soundMapLength++;
 
 		return false;
 	}
@@ -243,6 +252,7 @@ class SoundFE
 			if (soundMap[key] < now - soundThreshold)
 			{
 				soundMap.remove(key);
+				soundMapLength--;
 			}
 		}
 	}
